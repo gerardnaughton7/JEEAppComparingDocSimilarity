@@ -1,6 +1,8 @@
 package ie.gmit.sw;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -72,6 +74,7 @@ public class ServiceHandler extends HttpServlet {
 		String title = req.getParameter("txtTitle");
 		String taskNumber = req.getParameter("frmTaskNumber");
 		Part part = req.getPart("txtDocument");
+		List<Shingle> sList = new ArrayList<Shingle>();
 
 		
 		//Step 4) Process the input and write out the response. 
@@ -148,14 +151,10 @@ public class ServiceHandler extends HttpServlet {
 		 */
 		out.print("<h3>Uploaded Document</h3>");	
 		out.print("<font color=\"0000ff\">");	
-		BufferedReader br = new BufferedReader(new InputStreamReader(part.getInputStream()));
-		String line = null;
-		while ((line = br.readLine()) != null) {
-			//Break each line up into shingles and do something. The servlet really should act as a
-			//contoller and dispatch this task to something else... Divide and conquer...! I've been
-			//telling you all this since 2nd year...!
-			out.print(line);
-		}
+		
+		Shinglator s = new Shinglator(part, taskNumber);
+		sList = s.createShingles();
+		System.out.println(sList.size());
 		out.print("</font>");	
 	}
 

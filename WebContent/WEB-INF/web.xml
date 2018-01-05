@@ -39,4 +39,11 @@
     <servlet-name>service-poll-handler</servlet-name>
     <url-pattern>/poll</url-pattern>
   </servlet-mapping>
+  
+  <!--Gloabal Variables you should use in the Web.xml in jaccard folder-->
+  <context-param>
+    <param-name>SHINGLE_SIZE</param-name>
+    <param-value>3</param-value>
+  </context-param>
+  
 </web-app>
