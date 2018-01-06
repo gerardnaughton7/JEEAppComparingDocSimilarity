@@ -14,6 +14,9 @@ public class Shinglator {
 	private Part part;
 	private String docID;
 	private Shingle shingle;
+	private String [] words = null;
+	private String line = null;
+	
 	private List<Shingle> s = new ArrayList<Shingle>();
 	
 	public Shinglator(Part part, String docID) {
@@ -24,32 +27,30 @@ public class Shinglator {
 	
 	public List createShingles() throws IOException
 	{
-		String [] words = null;
-		BufferedReader br = new BufferedReader(new InputStreamReader(part.getInputStream()));
-		StringBuilder sb = new StringBuilder();
-		String line = null;
-		sb.append(s);
-		while ((line = br.readLine()) != null) {
-			//Break each line up into shingles and do something. The servlet really should act as a
-			//contoller and dispatch this task to something else... Divide and conquer...! I've been
-			//telling you all this since 2nd year...!
-			
-			words = line.split(" ");
+		int j = 0;// counts to see if shingle size is reached
+		BufferedReader br = new BufferedReader(new InputStreamReader(part.getInputStream()));// reads in from our document
+		StringBuilder sb = new StringBuilder();//builds a string of 3 words
+		while ((line = br.readLine()) != null) {//loops while line does not equal null
+			// ignores commas spaces and other punctuation
+			words = line.split("\\W+");
+			//loops through the words array and when j = 3 it creates a shingle and adds it to our shingle list s
 			for(int i = 0; i < words.length; i++) {
-				if(words[i] != null)
+				j++;
+				
+				sb.append(words[i]);
+				if(j == 3)
 				{
-					sb.append(words[i]);
-					if(i % 3 == 0 )
-					{
-						System.out.println(sb.toString());
-						shingle = new Shingle(this.docID, sb.toString().hashCode());
-						s.add(shingle);
-						sb.delete(0, sb.length());
-					}
+					System.out.println(sb.toString());
+					shingle = new Shingle(this.docID, sb.toString().hashCode());
+					s.add(shingle);
+					//reset j and stringbuilder once shingle is created 
+					sb.delete(0, sb.length());
+					j = 0;
 				}
+				
 			}
 		}
-		
+		//return shingle list
 		return s;
 	}
 

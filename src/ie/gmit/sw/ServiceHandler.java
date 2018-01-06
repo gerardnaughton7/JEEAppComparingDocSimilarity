@@ -31,7 +31,9 @@ public class ServiceHandler extends HttpServlet {
 	private BlockingQueue<Job> outQueue = new ArrayBlockingQueue<Job>(10);
 	private Worker worker;
 	private Job job;
-	
+	private Shinglator s;
+	private List<Shingle> sList = new ArrayList<Shingle>();
+	private Document doc;
 	
 	public ServiceHandler() {
 		super();
@@ -74,7 +76,6 @@ public class ServiceHandler extends HttpServlet {
 		String title = req.getParameter("txtTitle");
 		String taskNumber = req.getParameter("frmTaskNumber");
 		Part part = req.getPart("txtDocument");
-		List<Shingle> sList = new ArrayList<Shingle>();
 
 		
 		//Step 4) Process the input and write out the response. 
@@ -87,14 +88,7 @@ public class ServiceHandler extends HttpServlet {
 		if (taskNumber == null){
 			taskNumber = new String("T" + jobNumber);
 			jobNumber++;
-			job =  new Job(taskNumber, part);
-			//Add job to in-queue
-			try {
-				inQueue.put(job);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	
 		}else{
 			RequestDispatcher dispatcher = req.getRequestDispatcher("/poll");
 			dispatcher.forward(req,resp);
@@ -152,9 +146,22 @@ public class ServiceHandler extends HttpServlet {
 		out.print("<h3>Uploaded Document</h3>");	
 		out.print("<font color=\"0000ff\">");	
 		
-		Shinglator s = new Shinglator(part, taskNumber);
+		// break part into shingles return shingle list
+		s = new Shinglator(part, taskNumber);
 		sList = s.createShingles();
-		System.out.println(sList.size());
+		
+		// create a document which will be passed to the worker thread
+		doc = new Document(taskNumber, title, sList);
+		//Create job for worker
+		job = new Job(doc);
+		// add job to the blocking queue
+		try {
+			inQueue.put(job);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		out.print("</font>");	
 	}
 
