@@ -1,6 +1,8 @@
 package ie.gmit.sw;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -13,9 +15,11 @@ public class Shinglator {
 	
 	private Part part;
 	private String docID;
+	private File textFile;
 	private Shingle shingle;
 	private String [] words = null;
 	private String line = null;
+	private BufferedReader br;
 	
 	private List<Shingle> s = new ArrayList<Shingle>();
 	
@@ -25,10 +29,24 @@ public class Shinglator {
 		this.docID = docID;
 	}
 	
+	public Shinglator(File textFile, String docID)
+	{
+		super();
+		this.textFile = textFile;
+		this.docID = docID;
+	}
+	
 	public List createShingles() throws IOException
 	{
 		int j = 0;// counts to see if shingle size is reached
-		BufferedReader br = new BufferedReader(new InputStreamReader(part.getInputStream()));// reads in from our document
+		if(part != null)
+		{
+			br = new BufferedReader(new InputStreamReader(part.getInputStream()));// reads in from our document
+		}
+		else
+		{
+			br = new BufferedReader(new FileReader(textFile));// reads in from our document
+		}
 		StringBuilder sb = new StringBuilder();//builds a string of 3 words
 		while ((line = br.readLine()) != null) {//loops while line does not equal null
 			// ignores commas spaces and other punctuation

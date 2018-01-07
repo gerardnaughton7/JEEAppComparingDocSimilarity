@@ -25,7 +25,11 @@ public class Worker extends Thread{
 				//if j is null do nothing till job is available
 				if(j != null)
 				{
+					// save to database
 					
+					// compare document to other documents in database
+					
+					// return result to user outqueue
 					outQueue.offer (j); 
 					
 				}
