@@ -1,20 +1,22 @@
 package ie.gmit.sw;
 
-import com.db4o.*;
-import com.db4o.config.*;
-import com.db4o.query.*;
-import com.db4o.ta.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import com.db4o.Db4oEmbedded;
+import com.db4o.ObjectContainer;
+import com.db4o.ObjectSet;
+import com.db4o.config.EmbeddedConfiguration;
+import com.db4o.ta.TransparentActivationSupport;
+import com.db4o.ta.TransparentPersistenceSupport;
 import xtea_db4o.XTEA;
 import xtea_db4o.XTeaEncryptionStorage;
 
-import java.util.*;
 
-import static java.lang.System.*;
 
-import java.io.File;
-import java.io.IOException;
-
-public class DocDBRunner {
+public class DocDBRunner implements DatabaseInterface {
 	private ObjectContainer db = null;
 	private List<Document> dList = new ArrayList<Document>();
 	private Shinglator s;
@@ -22,8 +24,7 @@ public class DocDBRunner {
 	private Document doc;
 	
 	public DocDBRunner() throws IOException {
-		init(); //Populate the customers collection
-		
+		System.out.println("in db40");
 		EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
 		config.common().add(new TransparentActivationSupport()); //Real lazy. Saves all the config commented out below
 		config.common().add(new TransparentPersistenceSupport()); //Lazier still. Saves all the config commented out below
@@ -34,9 +35,18 @@ public class DocDBRunner {
 
 		//Open a local database. Use Db4o.openServer(config, server, port) for full client / server
 		db = Db4oEmbedded.openFile(config, "documents.data");
+		
+		dList = getDocuments();
+		System.out.println(dList.size());
+		if(dList.size() == 0) {
+			System.out.println("hiiiiii");
+			//init(); //Populate the customers collection
+		}
+		
 		//add files to database
-		addDocumentsToDatabase();
+		//addFilesToDatabase();
 		//showfiles in database
+		
 		showDocuments();
 		
 	
@@ -55,10 +65,11 @@ public class DocDBRunner {
 		   //save this
 		   dList.add(doc);
 		}
+		addFilesToDatabase();
 		
 	}
 	
-	private void addDocumentsToDatabase(){
+	private void addFilesToDatabase(){
 		for(Document d: dList)
 		{
 			db.store(d);//adds document objects to database
@@ -66,23 +77,45 @@ public class DocDBRunner {
 		db.commit();//commits the transaction
 	}
 	
+	public void addDocumentsToDatabase(Document d) {
+		db.store(d);
+		
+		db.commit();	
+	}
+	
 	private void showDocuments()
 	{
 		//An ObjectSet is a specialised List for storing results
 		ObjectSet<Document> documents = db.query(Document.class);
 		for (Document document : documents) {
-			out.println("[Document] " + document.getName() + "\t ***Database ObjID: " + db.ext().getID(document));
+			System.out.println("[Document] " + document.getName() + "\t ***Database ObjID: " + db.ext().getID(document));
 
+			//Removing objects from the database is as easy as adding them
+			//db.delete(document);
+			db.commit();
+		}
+	}
+	
+	public List getDocuments()
+	{
+		List<Document> temp = new ArrayList<Document>();
+		ObjectSet<Document> documents = db.query(Document.class);
+		System.out.println("in get documents"+ documents.size());
+		for (Document document : documents) {
+			//out.println("[Document] " + document.getName() + "\t ***Database ObjID: " + db.ext().getID(document));
+			temp.add(document);
 			//Removing objects from the database is as easy as adding them
 			//db.delete(customer);
 			db.commit();
 		}
+		return temp;
+		
 	}
+	
 	public static void main(String[] args) throws IOException
 	{
 		new DocDBRunner();
 	}
-	
 	
 }
 	
