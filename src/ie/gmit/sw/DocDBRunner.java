@@ -35,17 +35,11 @@ public class DocDBRunner implements DatabaseInterface {
 
 		//Open a local database. Use Db4o.openServer(config, server, port) for full client / server
 		db = Db4oEmbedded.openFile(config, "documents.data");
-		
 		dList = getDocuments();
-		System.out.println(dList.size());
-		if(dList.size() == 0) {
-			System.out.println("hiiiiii");
-			//init(); //Populate the customers collection
-		}
 		
-		//add files to database
-		//addFilesToDatabase();
-		//showfiles in database
+		if(dList.size() == 0) {
+			init(); //Populate the customers collection
+		}
 		
 		showDocuments();
 		
@@ -53,9 +47,10 @@ public class DocDBRunner implements DatabaseInterface {
 	}
 
 	private void init() throws IOException {
+		System.out.println("in init");
 		int i = 0;
 		// find directory with existing files
-		File dir = new File("textFiles/");
+		File dir = new File("C:/Users/gerar/Desktop/JEEAppComparingDocSimilarity/CompareDocs/TextFiles");
 		//loop through folder and make file into shingles and document object and save to database
 		for (File file : dir.listFiles()) {
 	   	   i++;
@@ -83,7 +78,7 @@ public class DocDBRunner implements DatabaseInterface {
 		db.commit();	
 	}
 	
-	private void showDocuments()
+	public void showDocuments()
 	{
 		//An ObjectSet is a specialised List for storing results
 		ObjectSet<Document> documents = db.query(Document.class);
@@ -102,10 +97,7 @@ public class DocDBRunner implements DatabaseInterface {
 		ObjectSet<Document> documents = db.query(Document.class);
 		System.out.println("in get documents"+ documents.size());
 		for (Document document : documents) {
-			//out.println("[Document] " + document.getName() + "\t ***Database ObjID: " + db.ext().getID(document));
 			temp.add(document);
-			//Removing objects from the database is as easy as adding them
-			//db.delete(customer);
 			db.commit();
 		}
 		return temp;

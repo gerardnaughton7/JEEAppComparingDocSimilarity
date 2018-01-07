@@ -6,10 +6,22 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import com.db4o.Db4oEmbedded;
+import com.db4o.ObjectContainer;
+import com.db4o.ObjectSet;
+import com.db4o.config.EmbeddedConfiguration;
+import com.db4o.query.Query;
+import com.db4o.ta.TransparentActivationSupport;
+import com.db4o.ta.TransparentPersistenceSupport;
+
+import xtea_db4o.XTEA;
+import xtea_db4o.XTeaEncryptionStorage;
+
 public class Worker extends Thread{
 	private BlockingQueue<Job> inQueue = new ArrayBlockingQueue<Job>(10);
 	private BlockingQueue<Job> outQueue = new ArrayBlockingQueue<Job>(10);
 	private Job j;
+	private ObjectContainer db = null;
 	private List<Document> dList = new ArrayList<Document>();
 	
 	//constructor with args inqueue and outqueue
@@ -29,11 +41,16 @@ public class Worker extends Thread{
 				//if j is null do nothing till job is available
 				if(j != null)
 				{
+			
 					DocDBRunner db;
 					try {
 						db = new DocDBRunner();
-						dList = db.getDocuments();
-						System.out.println(dList.size());
+						System.out.println("in worker show docs");
+						db.showDocuments();
+						db.addDocumentsToDatabase(j.getDoc());
+						db.showDocuments();
+						//dList = db.getDocuments();
+						//System.out.println(dList.size());
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
