@@ -26,9 +26,7 @@ public class ServiceHandler extends HttpServlet {
 	 */
 	private String environmentalVariable = null; //Demo purposes only. Rename this variable to something more appropriate
 	private static long jobNumber = 0;
-
-	private BlockingQueue<Job> inQueue = new ArrayBlockingQueue<Job>(10);
-	private BlockingQueue<Job> outQueue = new ArrayBlockingQueue<Job>(10);
+	private List<Result> rList = new ArrayList<Result>();
 	private Worker worker;
 	private Job job;
 	private Shinglator s;
@@ -37,8 +35,10 @@ public class ServiceHandler extends HttpServlet {
 	
 	public ServiceHandler() {
 		super();
-		worker = new Worker(inQueue,outQueue);
+		Global.init();
+		worker = new Worker();
 		new Thread(worker).start();
+		
 	}
 
 
@@ -49,7 +49,6 @@ public class ServiceHandler extends HttpServlet {
 	 */
 	public void init() throws ServletException {
 		ServletContext ctx = getServletContext(); //The servlet context is the application itself.
-		
 		//Reads the value from the <context-param> in web.xml. Any application scope variables 
 		//defined in the web.xml can be read in as follows:
 		environmentalVariable = ctx.getInitParameter("SOME_GLOBAL_OR_ENVIRONMENTAL_VARIABLE"); 
@@ -76,7 +75,6 @@ public class ServiceHandler extends HttpServlet {
 		String title = req.getParameter("txtTitle");
 		String taskNumber = req.getParameter("frmTaskNumber");
 		Part part = req.getPart("txtDocument");
-
 		
 		//Step 4) Process the input and write out the response. 
 		//The following string should be extracted as a context from web.xml 
@@ -88,11 +86,10 @@ public class ServiceHandler extends HttpServlet {
 		if (taskNumber == null){
 			taskNumber = new String("T" + jobNumber);
 			jobNumber++;
-	
 		}else{
+			//Check out-queue for finished job with the given taskNumber
 			RequestDispatcher dispatcher = req.getRequestDispatcher("/poll");
 			dispatcher.forward(req,resp);
-			//Check out-queue for finished job with the given taskNumber
 		}
 		
 		//Output some headings at the top of the generated page
@@ -154,13 +151,7 @@ public class ServiceHandler extends HttpServlet {
 		doc = new Document(taskNumber, title, sList);
 		//Create job for worker
 		job = new Job(doc);
-		// add job to the blocking queue
-		try {
-			inQueue.put(job);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Global.addToInQueue(job);
 		
 		out.print("</font>");	
 	}
@@ -168,4 +159,5 @@ public class ServiceHandler extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		doGet(req, resp);
  	}
+	
 }

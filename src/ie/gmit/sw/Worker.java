@@ -18,17 +18,17 @@ import xtea_db4o.XTEA;
 import xtea_db4o.XTeaEncryptionStorage;
 
 public class Worker extends Thread{
-	private BlockingQueue<Job> inQueue = new ArrayBlockingQueue<Job>(10);
-	private BlockingQueue<Job> outQueue = new ArrayBlockingQueue<Job>(10);
-	private Job j;
+	private BlockingQueue<Job> inQueue = new ArrayBlockingQueue<Job>(100);
+	private BlockingQueue<List<Result>> outQueue = new ArrayBlockingQueue<List<Result>>(100);
+	private Job j = null;
 	private ObjectContainer db = null;
 	private List<Document> dList = new ArrayList<Document>();
+	private List<Result> rList = new ArrayList<Result>();
+	private ComputeJaccard cj;
 	
 	//constructor with args inqueue and outqueue
-	public Worker(BlockingQueue<Job> inQueue, BlockingQueue<Job> outQueue) {
-		super();
-		this.inQueue = inQueue;
-		this.outQueue = outQueue;
+	public Worker() {
+		
 	}
 	
 	//run method which runs our jobs
@@ -36,8 +36,9 @@ public class Worker extends Thread{
 			//keeps running
 			while(true) {
 				//checks queue every 10 second
+				inQueue = Global.getInQueue();
 				j = inQueue.poll();
-				
+				//System.out.println("in worker checking for job"+ j.getDoc());
 				//if j is null do nothing till job is available
 				if(j != null)
 				{
@@ -45,11 +46,14 @@ public class Worker extends Thread{
 					DocDBRunner db;
 					try {
 						db = new DocDBRunner();
-						System.out.println("in worker show docs");
-						db.showDocuments();
+						//db.addDocumentsToDatabase(j.getDoc());
+						dList = db.getDocuments();
+						cj = new ComputeJaccard(dList,j.getDoc());
+						rList = cj.Compute();
 						db.addDocumentsToDatabase(j.getDoc());
-						db.showDocuments();
-						//dList = db.getDocuments();
+						db.closeDB();
+						
+						
 						//System.out.println(dList.size());
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -58,7 +62,9 @@ public class Worker extends Thread{
 					// compare document to other documents in database
 					
 					// return result to user outqueue
-					outQueue.offer (j); 
+					System.out.println("list size result"+rList.size());
+					Global.addToOutQueue(rList);
+					outQueue =  Global.getOutQueue();
 					
 				}
 			}

@@ -38,7 +38,7 @@ public class DocDBRunner implements DatabaseInterface {
 		dList = getDocuments();
 		
 		if(dList.size() == 0) {
-			init(); //Populate the customers collection
+			init(); //Populate files in directory and put into db4o
 		}
 		
 		showDocuments();
@@ -85,10 +85,15 @@ public class DocDBRunner implements DatabaseInterface {
 		for (Document document : documents) {
 			System.out.println("[Document] " + document.getName() + "\t ***Database ObjID: " + db.ext().getID(document));
 
-			//Removing objects from the database is as easy as adding them
+			//Removing objects from the database is as easy as adding them just using to clear some docs
 			//db.delete(document);
 			db.commit();
 		}
+	}
+	
+	public void closeDB()
+	{
+		db.close();
 	}
 	
 	public List getDocuments()

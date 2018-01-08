@@ -38,6 +38,7 @@ public class Shinglator {
 	
 	public List createShingles() throws IOException
 	{
+		System.out.println("this is the                                           doc ID" + docID);
 		int j = 0;// counts to see if shingle size is reached
 		if(part != null)
 		{
