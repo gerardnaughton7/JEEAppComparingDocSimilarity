@@ -2,15 +2,19 @@ package ie.gmit.sw;
 
 public class Result {
 	
+	//declare variables
 	private String NewDoc;
 	private String oldDoc;
 	private double result;
+	//constructor
 	public Result(String newDoc, String oldDoc, double result) {
 		super();
 		NewDoc = newDoc;
 		this.oldDoc = oldDoc;
 		this.result = result;
 	}
+	
+	//getters and setters
 	public String getNewDoc() {
 		return NewDoc;
 	}

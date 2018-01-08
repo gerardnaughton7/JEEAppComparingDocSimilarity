@@ -10,6 +10,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 public class ServicePollHandler extends HttpServlet {
+	//declare variables
 	private BlockingQueue<List<Result>> outQueue = new ArrayBlockingQueue<List<Result>>(100);
 	private List<Result> rList = new ArrayList<Result>();
 	
@@ -19,8 +20,10 @@ public class ServicePollHandler extends HttpServlet {
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("text/html"); 
+		//get handle on printwriter
 		PrintWriter out = resp.getWriter(); 
 		
+		//get variables from req
 		String title = req.getParameter("txtTitle");
 		String taskNumber = req.getParameter("frmTaskNumber");
 		int counter = 1;
@@ -28,19 +31,21 @@ public class ServicePollHandler extends HttpServlet {
 			counter = Integer.parseInt(req.getParameter("counter"));
 			counter++;
 		}
+		//check queue to see if your job is in the outqueue
 		try {
 			rList = checkQueue(title);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//if rList != null output result of your text against other documents in db40
 		if(rList != null)
 		{
-			System.out.println("im here guys");
+			//print out results page
 			out.printf("<html><head><title>A JEE Application for Measuring Document Similarity</title>");
-		    out.print("<div class='centered'><table>");
-		    out.printf("<h1 align=\"center\"><b>%s</b></h1>", title);
-		    out.print("<tr><th>Document title</th><th>Similarity</th></tr>");
+			out.print("<div><table style=\"border: 3px solid black\">");
+		    out.printf("<h1><b>Document Being Compared: %s</b></h1>", title);
+		    out.print("<tr><th>Uploaded Doc</th><th>Saved Docs</th><th>Similarity</th></tr>");
 		    for (int i =0; i<rList.size(); i++) {
 			out.print("<tr><td>");
 			out.print(rList.get(i).getNewDoc());
@@ -53,21 +58,20 @@ public class ServicePollHandler extends HttpServlet {
 		    out.println();
 		    out.print("</table></div>");
 		    // Home button
-		    out.printf("<p align=\"center\">"
+		    out.printf("<p>"
 			    + "<button onclick=\"window.location.href='index.jsp'\">Home</button>"
 			    + "</p>");
 		    out.print("</body></html>");
 		}
-		else
+		else//output waiting page that shows how many times the queue has been polled
 		{
+			
 			out.print("<html><head><title>A JEE Application for Measuring Document Similarity</title>");		
 			out.print("</head>");		
 			out.print("<body>");
 			out.print("<H1>Processing request for Job#: " + taskNumber + "</H1>");
 			out.print("<H3>Document Title: " + title + "</H3>");
 			out.print("<b><font color=\"ff0000\">A total of " + counter + " polls have been made for this request.</font></b> ");
-			out.print("Place the final response here... a nice table (or graphic!) of the document similarity...");
-			
 			out.print("<form name=\"frmRequestDetails\">");
 			out.print("<input name=\"txtTitle\" type=\"hidden\" value=\"" + title + "\">");
 			out.print("<input name=\"frmTaskNumber\" type=\"hidden\" value=\"" + taskNumber + "\">");
@@ -87,30 +91,26 @@ public class ServicePollHandler extends HttpServlet {
 		doGet(req, resp);
  	}
 	
-	// checkQueue for the job u requested by searching head of queue for id
+	// checkQueue for the job u requested by searching the queue
 		private List checkQueue(String title) throws InterruptedException  {
 			List<Result> temp = new ArrayList<Result>();
 			boolean found = false;
-			
-			//keep searching till job is found in queue and retrieve job with result definition
-			
+			//get handle of outQueue		
 			outQueue = Global.getOutQueue();
-			//System.out.println("hfkkjhjkfdhjkhd"+temp.get(0).getNewDoc());
+			//loop through queue until your job title is found
 			for(int i = 0;i < outQueue.size();i++)
 			{
 				temp = outQueue.peek();
-				System.out.println("in while loop"+ temp.get(i).getNewDoc());
-				System.out.println("in while loop"+ title);
-				String tString = temp.get(i).getNewDoc();
-				if(temp != null && tString.equals(title))
+				
+				//if job found title, mark found as true and return temp 
+				if(temp != null && temp.get(i).getNewDoc().equals(title))
 				{
 					found = true;
-					temp = outQueue.poll();//poll the queue every 10 second
+					temp = outQueue.poll();
 				}
 			}
 			if(found == true)
 			{
-				System.out.println("im true");
 				return temp;
 			}
 			else

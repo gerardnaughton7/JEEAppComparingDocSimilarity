@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class ComputeJaccard {
-	
+	//declare variables
 	private List<Document> dList = new ArrayList<Document>();
 	private Document d;
 	private TreeSet<Integer> hashes = new TreeSet<Integer>();
@@ -21,12 +21,14 @@ public class ComputeJaccard {
 	private double jaccard;
 	private Result result;
 	
+	//contructor
 	public ComputeJaccard(List<Document> dList, Document d) {
 		super();
 		this.dList = dList;
 		this.d = d;
 	}
 	
+	//compute method which calls generateNumbers and minHases and computes the jaccard function between the uploaded doc and existing docs
 	public List Compute()
 	{
 		hashes = generateNumbers();
@@ -34,21 +36,22 @@ public class ComputeJaccard {
 		for(Document doc : dList)
 		{
 			prevDocs = generateMinHashes(doc);
-			common.addAll(newDocs);
-			common.retainAll(prevDocs);
-			System.out.println("new doc size after "+ newDocs.size());
-			System.out.println("common after all changed"+ common.size());
+			common.addAll(newDocs);//copies newDocs
+			common.retainAll(prevDocs);//finds whats common between them
 			jaccard = ((double)common.size()) / newDocs.size();
-			System.out.println(jaccard);
+			//create result object
 			result = new Result(d.getName(),doc.getName(),jaccard);
+			//add result to result list
 			rList.add(result);
+			//clear common for next iteration
 			common.clear();
 		}
-		
+		//return list
 		return rList;
 		
 	}
 	
+	// create treeset of 200 random integers
 	public TreeSet<Integer> generateNumbers()
 	{
 		hashes = new TreeSet<Integer>();
@@ -62,12 +65,12 @@ public class ComputeJaccard {
 		
 	}
 	
+	//gets the minhash of our shingles and hashes and creates a list of 200 of the lowest
 	public List<Integer> generateMinHashes(Document doc)
 	{
 		List<Integer> temp = new ArrayList<Integer>();
 		List<Shingle> s = new ArrayList<Shingle>();
 		s = doc.getShinglelist();
-		System.out.println(doc.getName());
 		
 		for(Integer hash : hashes)
 		{

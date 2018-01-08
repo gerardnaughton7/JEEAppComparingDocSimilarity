@@ -6,6 +6,7 @@ import java.util.concurrent.BlockingQueue;
 
 public class Global {
 	
+	//declare variables
 	private static BlockingQueue<Job> inQueue;
 	private static BlockingQueue<List<Result>> outQueue;
 	
@@ -13,7 +14,7 @@ public class Global {
 	{
 		
 	}
-	
+	// creates inqueue and outqueue on init and makes them accessible to servlets and workers
 	public static synchronized Boolean init()
 	{
 		
@@ -23,6 +24,7 @@ public class Global {
 		return true;
 	}
 
+	//get set methods
 	public static BlockingQueue<Job> getInQueue() {
 		return inQueue;
 	}
@@ -39,11 +41,13 @@ public class Global {
 		Global.outQueue = outQueue;
 	}
 	
+	//add job to inqueue
 	public static void addToInQueue(Job j)
 	{
 		Global.inQueue.add(j);
 	}
 	
+	// adds list of results to outQueue
 	public static void addToOutQueue(List<Result> r)
 	{
 		Global.outQueue.add(r);

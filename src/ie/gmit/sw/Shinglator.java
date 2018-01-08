@@ -12,7 +12,7 @@ import java.util.Map;
 import javax.servlet.http.Part;
 
 public class Shinglator {
-	
+	//declare variables
 	private Part part;
 	private String docID;
 	private File textFile;
@@ -20,15 +20,15 @@ public class Shinglator {
 	private String [] words = null;
 	private String line = null;
 	private BufferedReader br;
-	
 	private List<Shingle> s = new ArrayList<Shingle>();
 	
+	//constructor
 	public Shinglator(Part part, String docID) {
 		super();
 		this.part = part;
 		this.docID = docID;
 	}
-	
+	//overloaded constructor depending on what type of doc it takes in either from part or file
 	public Shinglator(File textFile, String docID)
 	{
 		super();
@@ -38,19 +38,19 @@ public class Shinglator {
 	
 	public List createShingles() throws IOException
 	{
-		System.out.println("this is the                                           doc ID" + docID);
 		int j = 0;// counts to see if shingle size is reached
+		//if part != null read in using part
 		if(part != null)
 		{
 			br = new BufferedReader(new InputStreamReader(part.getInputStream()));// reads in from our document
 		}
-		else
+		else//else use FileReader
 		{
 			br = new BufferedReader(new FileReader(textFile));// reads in from our document
 		}
 		StringBuilder sb = new StringBuilder();//builds a string of 3 words
 		while ((line = br.readLine()) != null) {//loops while line does not equal null
-			// ignores commas spaces and other punctuation
+			//adds to word array ignores commas spaces and other punctuation
 			words = line.split("\\W+");
 			//loops through the words array and when j = 3 it creates a shingle and adds it to our shingle list s
 			for(int i = 0; i < words.length; i++) {
@@ -59,7 +59,6 @@ public class Shinglator {
 				sb.append(words[i]);
 				if(j == 3)
 				{
-					System.out.println(sb.toString());
 					shingle = new Shingle(this.docID, sb.toString().hashCode());
 					s.add(shingle);
 					//reset j and stringbuilder once shingle is created 

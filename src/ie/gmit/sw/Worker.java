@@ -21,53 +21,51 @@ public class Worker extends Thread{
 	private BlockingQueue<Job> inQueue = new ArrayBlockingQueue<Job>(100);
 	private BlockingQueue<List<Result>> outQueue = new ArrayBlockingQueue<List<Result>>(100);
 	private Job j = null;
-	private ObjectContainer db = null;
 	private List<Document> dList = new ArrayList<Document>();
 	private List<Result> rList = new ArrayList<Result>();
 	private ComputeJaccard cj;
 	
-	//constructor with args inqueue and outqueue
+	//constructor 
 	public Worker() {
 		
 	}
 	
 	//run method which runs our jobs
-		public void run() {
-			//keeps running
-			while(true) {
-				//checks queue every 10 second
-				inQueue = Global.getInQueue();
-				j = inQueue.poll();
-				//System.out.println("in worker checking for job"+ j.getDoc());
-				//if j is null do nothing till job is available
-				if(j != null)
-				{
+	public void run() {
+		//keeps running
+		while(true) {
+			//get handle on inQueue
+			inQueue = Global.getInQueue();
+			//get job to queue
+			j = inQueue.poll();
 			
-					DocDBRunner db;
-					try {
-						db = new DocDBRunner();
-						//db.addDocumentsToDatabase(j.getDoc());
-						dList = db.getDocuments();
-						cj = new ComputeJaccard(dList,j.getDoc());
-						rList = cj.Compute();
-						db.addDocumentsToDatabase(j.getDoc());
-						db.closeDB();
-						
-						
-						//System.out.println(dList.size());
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					// compare document to other documents in database
+			//if j is null do nothing till job is available
+			if(j != null)
+			{
+				//get handle on database
+				DocDBRunner db;
+				//get Docs from database and call Compute Jaccard
+				try {
+					db = new DocDBRunner();
+					dList = db.getDocuments();
+					cj = new ComputeJaccard(dList,j.getDoc());
+					//compute returns a list of results for that job
+					rList = cj.Compute();
+					//add document to db40 database
+					//db.addDocumentsToDatabase(j.getDoc());
+					//close database
+					db.closeDB();
 					
-					// return result to user outqueue
-					System.out.println("list size result"+rList.size());
-					Global.addToOutQueue(rList);
-					outQueue =  Global.getOutQueue();
-					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+				
+				// return result to user outqueue
+				Global.addToOutQueue(rList);
+				
 			}
 		}
+	}
 		
 }

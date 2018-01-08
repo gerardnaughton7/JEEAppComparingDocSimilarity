@@ -1,16 +1,18 @@
 package ie.gmit.sw;
 
 public class Shingle {
-	
+	//declare variables
 	private String docID;
 	private int hashCode;
 	
+	//constructor
 	public Shingle(String docID, int hashCode) {
 		super();
 		this.docID = docID;
 		this.hashCode = hashCode;
 	}
-
+	
+	//getters and setters
 	public String getDocID() {
 		return docID;
 	}

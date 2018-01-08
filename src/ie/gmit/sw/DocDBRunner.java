@@ -16,38 +16,38 @@ import xtea_db4o.XTeaEncryptionStorage;
 
 
 
-public class DocDBRunner implements DatabaseInterface {
+public class DocDBRunner {
+	//declare variables
 	private ObjectContainer db = null;
 	private List<Document> dList = new ArrayList<Document>();
 	private Shinglator s;
 	private List<Shingle> sList = new ArrayList<Shingle>();
 	private Document doc;
 	
+	//constructoe
 	public DocDBRunner() throws IOException {
-		System.out.println("in db40");
 		EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
-		config.common().add(new TransparentActivationSupport()); //Real lazy. Saves all the config commented out below
-		config.common().add(new TransparentPersistenceSupport()); //Lazier still. Saves all the config commented out below
+		config.common().add(new TransparentActivationSupport()); //Configuration
+		config.common().add(new TransparentPersistenceSupport()); //Configuration
 		config.common().updateDepth(7); //Propagate updates
 		
-		//Use the XTea lib for encryption. The basic Db4O container only has a Caesar cypher... Dicas quod non est ita!
+		//Use the XTea lib for encryption. 
 		config.file().storage(new XTeaEncryptionStorage("password", XTEA.ITERATIONS64));
 
-		//Open a local database. Use Db4o.openServer(config, server, port) for full client / server
-		db = Db4oEmbedded.openFile(config, "documents.data");
+		//Open a local database. 
+		db = Db4oEmbedded.openFile(config, "C:/Users/gerar/Desktop/JEEAppComparingDocSimilarity/CompareDocs/WebContent/documents.data");
 		dList = getDocuments();
 		
 		if(dList.size() == 0) {
 			init(); //Populate files in directory and put into db4o
 		}
 		
-		showDocuments();
-		
+		//showDocuments(); used to check if documents were being added
 	
 	}
 
+	// save the text as shingles and store as documents in db40
 	private void init() throws IOException {
-		System.out.println("in init");
 		int i = 0;
 		// find directory with existing files
 		File dir = new File("C:/Users/gerar/Desktop/JEEAppComparingDocSimilarity/CompareDocs/TextFiles");
@@ -57,13 +57,14 @@ public class DocDBRunner implements DatabaseInterface {
 		   s = new Shinglator(file, "r"+i);
 		   sList = s.createShingles();
 		   doc = new Document("r"+i, file.getName(), sList);
-		   //save this
+		   //add doc to list
 		   dList.add(doc);
 		}
 		addFilesToDatabase();
 		
 	}
 	
+	//adds files to database upon init
 	private void addFilesToDatabase(){
 		for(Document d: dList)
 		{
@@ -72,13 +73,15 @@ public class DocDBRunner implements DatabaseInterface {
 		db.commit();//commits the transaction
 	}
 	
+	//add one document
 	public void addDocumentsToDatabase(Document d) {
 		db.store(d);
 		
 		db.commit();	
 	}
 	
-	public void showDocuments()
+	//shows documents function to help check if docs were being saved
+	private void showDocuments()
 	{
 		//An ObjectSet is a specialised List for storing results
 		ObjectSet<Document> documents = db.query(Document.class);
@@ -91,16 +94,17 @@ public class DocDBRunner implements DatabaseInterface {
 		}
 	}
 	
+	// close db
 	public void closeDB()
 	{
 		db.close();
 	}
 	
+	// get list of documents in batabase
 	public List getDocuments()
 	{
 		List<Document> temp = new ArrayList<Document>();
 		ObjectSet<Document> documents = db.query(Document.class);
-		System.out.println("in get documents"+ documents.size());
 		for (Document document : documents) {
 			temp.add(document);
 			db.commit();
@@ -109,6 +113,7 @@ public class DocDBRunner implements DatabaseInterface {
 		
 	}
 	
+	//main method
 	public static void main(String[] args) throws IOException
 	{
 		new DocDBRunner();
