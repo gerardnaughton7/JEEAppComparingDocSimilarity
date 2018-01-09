@@ -62,7 +62,7 @@ public class Worker extends Thread{
 					//compute returns a list of results for that job
 					rList = cj.Compute();
 					//add document to db40 database
-					//db.addDocumentsToDatabase(j.getDoc());
+					db.addDocumentsToDatabase(j.getDoc());
 					//close database
 					db.closeDB();
 					

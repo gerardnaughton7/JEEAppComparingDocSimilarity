@@ -4,7 +4,8 @@
 [OverView](#overview)     
 [Technology](#tech)                     
 [How to run Repository](#repo)  
-[How to use Application](#use)     
+[How to use Application](#use) 
+[Link to video of Application Working](#video)        
 [References](#ref) 
 
 ## OverView <a name = "overview"></a>
@@ -55,17 +56,21 @@ Once all setup. Clone the repository to your machine:
 2. Copy and paste the git clone link in the right corner of the github page.
 3. Type the command "git clone " followed by the link.
 
-Import and run project on eclipse:
+Import and run project on Eclipse JEE:
 
-1. Import Project into your eclipse there should be 2 folders RMI_Client and RMI_Server.
-2. Then in your src folder of RMI_Server right click ServiceSetup and click run as application.
-3. Then go to your RMI_Client and in the WebContent Folder right click the index.jsp and click run as, run on server.
-4. A pop window should show up and the application should be running. if not paste this url into your browser "http://localhost:8080/RMI_Client/index.jsp".
+1. Import Project into your eclipse JEE.
+2. Add Tomcat Server(I used Tomcat 8.5) to the Project. Click [here](http://www.eclipse.org/webtools/jst/components/j2ee/scenarios/running_webproject.html) if you dont know how to add Tomcat server.
+3. Next you will have to set you DB_PATH and FILE PATH
+    * Find the address for your textFiles Folder and database.data.
+    * Then swap the address in the web.xml for DB_PATH and FILE_PATH to your new addresses.
+3. Then go to your Project and right click run as, run on server.
+4. A pop window should show up and the application should be running.
+5. Upload a text document and Click Compare Document.
+6. Soon a window will show up and showing the results.
 
+## Link to video of Application Working <a name = "video"></a>
 
-
-## How to use Application <a name = "use"></a>
-
+[![IMAGE ALT TEXT HERE](images/video.PNG)](https://www.youtube.com/watch?v=o1P5MWZzDxg&feature=youtu.be)
 
 
 ## References <a name = "ref"></a>
