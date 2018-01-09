@@ -17,6 +17,16 @@ import com.db4o.ta.TransparentPersistenceSupport;
 import xtea_db4o.XTEA;
 import xtea_db4o.XTeaEncryptionStorage;
 
+/**
+ * Worker Thread is spawned in ServiceHandler constructor and the thread pulls from the Global inQueue retrieving jobs.
+ * It then processes these job by then comparing the Document in the job similarity with other documents saved in the DB4O.
+ * Run method:
+ * Checks for Job
+ * if Job exists it computes the Jaccard similarity with existing documents, saves the job document in DB4O and then outputs the campare Results to the Global OutQueue. 
+ * 
+ * @author Gerard Naughton
+ *
+ */
 public class Worker extends Thread{
 	private BlockingQueue<Job> inQueue = new ArrayBlockingQueue<Job>(100);
 	private BlockingQueue<List<Result>> outQueue = new ArrayBlockingQueue<List<Result>>(100);

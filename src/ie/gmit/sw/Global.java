@@ -4,6 +4,12 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * Global sets up BlockingQueues and allows access to ServiceHandler and ServicePollHandler
+ * 
+ * @author Gerard Naughton
+ *
+ */
 public class Global {
 	
 	//declare variables

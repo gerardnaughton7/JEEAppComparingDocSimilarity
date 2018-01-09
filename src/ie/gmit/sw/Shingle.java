@@ -1,5 +1,11 @@
 package ie.gmit.sw;
 
+/**
+ * Shingle object which is made up of a docID and a hashCode
+ * 
+ * @author Gerard Naughton
+ *
+ */
 public class Shingle {
 	//declare variables
 	private String docID;

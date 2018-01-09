@@ -2,6 +2,12 @@ package ie.gmit.sw;
 
 import java.util.List;
 
+/**
+ * Document Object which takes ShingleList, docID, name
+ * 
+ * @author Gerard Naughton
+ *
+ */
 public class Document {
 	private List shinglelist;
 	private String docID;

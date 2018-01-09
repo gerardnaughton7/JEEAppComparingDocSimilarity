@@ -11,6 +11,12 @@ import java.util.Map;
 
 import javax.servlet.http.Part;
 
+/**
+ * Shinglator breaks the part or file text into Shingles(groups 3 words into a hashCode) and returns a list of shingles
+ * 
+ * @author Gerard Naughton
+ *
+ */
 public class Shinglator {
 	//declare variables
 	private Part part;
@@ -57,7 +63,7 @@ public class Shinglator {
 				j++;
 				
 				sb.append(words[i]);
-				if(j == 3)
+				if(j == GlobalVars.getSHINGLE_SIZE())
 				{
 					shingle = new Shingle(this.docID, sb.toString().hashCode());
 					s.add(shingle);

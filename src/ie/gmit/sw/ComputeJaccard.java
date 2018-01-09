@@ -8,6 +8,15 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * ComputeJaccard takes in List of Documents and and a Document to compare them too.
+ * Compute Method Calculates the Similarity between documents and returns a list of Results
+ * generateNumbers Method returns a Set of 200 random integers
+ * generateMinHashes Method takes in a document and returns a list of 200 minHashed shingles
+ * 
+ * @author Gerard Naughton
+ *
+ */
 public class ComputeJaccard {
 	//declare variables
 	private List<Document> dList = new ArrayList<Document>();
@@ -17,7 +26,6 @@ public class ComputeJaccard {
 	private List<Integer> prevDocs = new ArrayList<Integer>();
 	private List<Integer> common = new ArrayList<Integer>();
 	private List<Result> rList = new ArrayList<Result>();
-	private final int SET_MAX = 200;
 	private double jaccard;
 	private Result result;
 	
@@ -56,7 +64,7 @@ public class ComputeJaccard {
 	{
 		hashes = new TreeSet<Integer>();
 		Random r = new Random();
-		for(int i=0; i<SET_MAX;i++)
+		for(int i = 0; i < GlobalVars.getMAX_HASHES(); i++)
 		{
 			hashes.add(r.nextInt());
 		}

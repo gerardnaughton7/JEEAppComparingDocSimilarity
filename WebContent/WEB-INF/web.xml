@@ -10,10 +10,25 @@
      read and initialised by a start-up servlet.
   </description>
 
-  <!-- A context is a variable with application wide scope. These can be accessed easily in a Servlet or JSP page-->
+  <!--Gloabal Variables you should use in the Web.xml in jaccard folder-->
   <context-param>
-    <param-name>SOME_GLOBAL_OR_ENVIRONMENTAL_VARIABLE</param-name>
-    <param-value>Some Value</param-value>
+    <param-name>SHINGLE_SIZE</param-name>
+    <param-value>3</param-value>
+  </context-param>
+  
+  <context-param>
+    <param-name>DB_PATH</param-name>
+    <param-value>C:/Users/gerar/Desktop/JEEAppComparingDocSimilarity/CompareDocs/WebContent/documents.data</param-value>
+  </context-param>
+  
+  <context-param>
+    <param-name>FILE_PATH</param-name>
+    <param-value>C:/Users/gerar/Desktop/JEEAppComparingDocSimilarity/CompareDocs/TextFiles</param-value>
+  </context-param>
+  
+  <context-param>
+    <param-name>MAX_HASHES</param-name>
+    <param-value>200</param-value>
   </context-param>
 
   <!-- A servlet class must be bound to a name -->
@@ -39,11 +54,5 @@
     <servlet-name>service-poll-handler</servlet-name>
     <url-pattern>/poll</url-pattern>
   </servlet-mapping>
-  
-  <!--Gloabal Variables you should use in the Web.xml in jaccard folder-->
-  <context-param>
-    <param-name>SHINGLE_SIZE</param-name>
-    <param-value>3</param-value>
-  </context-param>
   
 </web-app>

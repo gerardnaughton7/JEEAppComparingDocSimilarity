@@ -14,7 +14,13 @@ import com.db4o.ta.TransparentPersistenceSupport;
 import xtea_db4o.XTEA;
 import xtea_db4o.XTeaEncryptionStorage;
 
-
+/**
+ * Creates DB4O database and inputs files upon init()
+ * Contains public methods allowing Application to addDocuments to database, getDocuments from database and close the database.
+ * 
+ * @author Gerard Naughton
+ *
+ */
 
 public class DocDBRunner {
 	//declare variables
@@ -24,7 +30,7 @@ public class DocDBRunner {
 	private List<Shingle> sList = new ArrayList<Shingle>();
 	private Document doc;
 	
-	//constructoe
+	//constructor
 	public DocDBRunner() throws IOException {
 		EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
 		config.common().add(new TransparentActivationSupport()); //Configuration
@@ -35,7 +41,7 @@ public class DocDBRunner {
 		config.file().storage(new XTeaEncryptionStorage("password", XTEA.ITERATIONS64));
 
 		//Open a local database. 
-		db = Db4oEmbedded.openFile(config, "C:/Users/gerar/Desktop/JEEAppComparingDocSimilarity/CompareDocs/WebContent/documents.data");
+		db = Db4oEmbedded.openFile(config, GlobalVars.getDB_PATH());
 		dList = getDocuments();
 		
 		if(dList.size() == 0) {
@@ -50,7 +56,7 @@ public class DocDBRunner {
 	private void init() throws IOException {
 		int i = 0;
 		// find directory with existing files
-		File dir = new File("C:/Users/gerar/Desktop/JEEAppComparingDocSimilarity/CompareDocs/TextFiles");
+		File dir = new File(GlobalVars.getFILE_PATH());
 		//loop through folder and make file into shingles and document object and save to database
 		for (File file : dir.listFiles()) {
 	   	   i++;

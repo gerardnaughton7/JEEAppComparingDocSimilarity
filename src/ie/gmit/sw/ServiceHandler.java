@@ -10,6 +10,13 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 
+/**
+ * Service Handler handles post and get requests to upload Documents and navigate to other pages.
+ *  
+ * 
+ * @author Gerard Naughton
+ *
+ */
 
 @WebServlet("/UploadServlet")
 @MultipartConfig(fileSizeThreshold=1024*1024*2, 
@@ -34,6 +41,10 @@ public class ServiceHandler extends HttpServlet {
 
 	public void init() throws ServletException {
 		ServletContext ctx = getServletContext(); 
+		GlobalVars.setSHINGLE_SIZE(Integer.parseInt(ctx.getInitParameter("SHINGLE_SIZE")));
+		GlobalVars.setMAX_HASHES(Integer.parseInt(ctx.getInitParameter("MAX_HASHES")));
+		GlobalVars.setFILE_PATH(ctx.getInitParameter("FILE_PATH"));
+		GlobalVars.setDB_PATH(ctx.getInitParameter("DB_PATH"));
 	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

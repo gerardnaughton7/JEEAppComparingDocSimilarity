@@ -9,6 +9,12 @@ import java.util.concurrent.BlockingQueue;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+/**
+ * Handles poll request to the blocking queue and outputs waiting page and results page
+ * 
+ * @author Gerard Naughton
+ *
+ */
 public class ServicePollHandler extends HttpServlet {
 	//declare variables
 	private BlockingQueue<List<Result>> outQueue = new ArrayBlockingQueue<List<Result>>(100);
